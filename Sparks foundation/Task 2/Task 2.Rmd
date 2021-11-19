@@ -1,0 +1,125 @@
+---
+title: "Task#2(Sparks Foundation)"
+subtitle: "Predict the Optimum number of cluster and represent it visually"
+author: "VARUN R - 19BCE1399"
+---
+
+## Clustering By Using R
+
+In this section we will see how the R language can be used to create cluster of the data sets. We will start with **K-Means Clustering** involving **iris** data sets.
+
+## K-Means Clustering:
+
+k-means clustering is a method of vector quantization, originally from signal processing, that aims to partition n observations into k clusters in which each observation belongs to the cluster with the nearest mean, serving as a prototype of the cluster.
+
+## Data Sets:
+The task is to used **Iris** data sets:
+
+
+```{r echo=TRUE}
+library(datasets) #for using iris data sets load the datasets library.
+
+data("iris")
+```
+
+**Iris** dataset gives the measurements in centimeters of the variables sepal length and width and petal length and width, respectively, for 50 flowers from each of 3 species of iris. The species are Iris setosa, versicolor, and virginica.
+
+
+```{r echo=TRUE}
+head(iris)
+```
+
+To read the total number of rows and columns of iris datasets:
+```{r echo=TRUE}
+dim(iris)
+```
+
+So, the iris datasets have **150 Rows** and **5 Columns**.
+
+To check the details of iris datasets:
+```{r echo=TRUE}
+summary(iris)
+```
+
+### Set Seeds
+it ensures that you get the same result if you start with that same seed each time you run the same process.
+
+I set seed to our visualization.
+```{r echo=TRUE}
+set.seed(8593)
+```
+
+
+```{r echo=TRUE}
+iris_data <- iris[1:4]
+head(iris_data)
+```
+
+### find Optimum Cluster or determine the value of k
+
+first step to scaling the give dataset:
+```{r echo=TRUE}
+iris_data_scale <- scale(iris_data)
+head(iris_data_scale,20)
+```
+
+
+For determine the value create visualization of scaling datasets with sumsquares
+```{r eval=TRUE}
+library(ggplot2)
+library(factoextra)
+```
+
+**fviz_nbclust():** Dertemines and visualize the optimal number of clusters using different methods: within cluster sums of squares, average silhouette and gap statistics.
+**"wss":** for total within sum of square
+```{r echo=TRUE}
+fviz_nbclust(iris_data_scale, kmeans, method = "wss") + 
+  labs(title = "The elbow method")
+
+```
+
+The optimum cluster or value of k is where the elbow occur.
+
+From the above graph we clearly see the elbow occur is on the point of 3.
+
+So, the value of **k** is **3**.
+
+### K-Means Model:
+```{r echo=TRUE}
+kmeans.model <- kmeans(iris_data, 3)
+kmeans.model
+```
+
+After this code I can see size of these clusters, which means exact count of variables for cluster, in this case: 50, 62, 38.
+
+For further information about accuracy of each species in cluster, I used:
+```{r echo=TRUE}
+table(iris$Species,kmeans.model$cluster)
+```
+
+## Visualization
+
+Now visualization the cluster:
+```{r echo=TRUE}
+colnames(iris_data)
+plot(iris_data[c("Sepal.Length","Sepal.Width")], 
+     col = kmeans.model$cluster
+     , pch = 19)
+```
+
+
+
+```{r eval=TRUE}
+library(cluster)
+library(fpc)
+```
+
+```{r echo=TRUE}
+plotcluster(iris_data,kmeans.model$cluster)
+```
+
+```{r echo=TRUE}
+clusplot(iris_data, kmeans.model$cluster, color = TRUE , shade = TRUE)
+```
+
+# Thank You!
